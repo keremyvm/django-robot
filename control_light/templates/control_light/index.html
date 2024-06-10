@@ -1,0 +1,130 @@
+{% extends "control_light/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+    <h1>Django arduino IOT</h1>
+
+    <div class="main">
+        
+        
+        
+        <div>
+            <table width="100%">
+                <tr>
+                    <td width="50%">
+
+                        <canvas id="chart-volt" style="width: 100% !important"></canvas>
+                    </td>
+                    <td width="50%">
+                        <canvas id="chart-temp" style="width: 100% !important"></canvas>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+    <script>
+        const tension  = 0.5;
+        const chrtVolt = new Chart(document.getElementById('chart-volt').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Voltaje',
+                    data: [],
+                    fill: false,
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: tension
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        min: 0, // Valor mínimo del eje Y
+                        max: 5 // Valor máximo del eje Y
+                    }
+                }
+            }
+        });
+        const chrtSer = new Chart(document.getElementById('chart-temp').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Temperatura',
+                    data: [],
+                    fill: false,
+                    borderColor: 'rgb(235, 52, 116)',
+                    tension: tension
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        min: 15, // Valor mínimo del eje Y
+                        max: 18 // Valor máximo del eje Y
+                    }
+                }
+            }
+        });
+        const chartConfig = {
+            volt: {
+                labels: [],
+                dataSet: [],
+            },
+            temp: {
+                labels: [],
+                dataSet: [],
+            }
+        }
+
+        let iteraciones = 1;
+        
+
+
+        async function updateChart(_chart, config) {
+            _chart.data.labels = config.labels
+            _chart.data.datasets[0].data = config.dataSet
+            _chart.update()
+        }
+
+        function scaling(x, in_min, in_max, out_min, out_max) {
+            let denominador = (parseFloat(in_max) - parseFloat(in_min)) + parseFloat(out_min);
+            let numerador = (parseFloat(x) - parseFloat(in_min)) * (parseFloat(out_max) - parseFloat(out_min));
+            if (denominador <= 0.0) {
+                return numerador;
+            }
+            return parseFloat((numerador / denominador).toFixed(2));
+        }
+
+        setInterval(async () => {
+            let r =  await axios.get(`{% url 'readGraph' %}`);
+
+            let voltaje = scaling(r.data.volt, 0, 1023, 0, 5);
+            let temperatura = parseFloat((r.data.temp / 50).toFixed(2)); // scaling(r.data.temp, 0, 1023, -50, 150);
+
+            console.table({ voltaje, voltajeOriginal: r.data.volt, temperatura, temperaturaOriginal:r.data.temp })
+
+            chartConfig.volt.labels.push(iteraciones);
+            chartConfig.volt.dataSet.push(voltaje);
+
+            await updateChart(chrtVolt, chartConfig.volt);
+
+            
+            chartConfig.temp.labels.push(iteraciones);
+            chartConfig.temp.dataSet.push(temperatura);
+            
+            await updateChart(chrtSer, chartConfig.temp);
+
+            iteraciones++;
+        }, 2000);
+
+        
+       
+        
+    </script>
+{% endblock  %}

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django Arduino</title>
+</head>
+<body>
+    <ul>
+        <li>
+            <a href="{% url 'index' %}">Panel de graficos</a>
+        </li>
+        <li>
+            <a href="{% url 'leds' '2' %}">Panel de Leds</a>
+        </li>
+    </ul>
+    {% block body %}
+    {% endblock  %}
+</body>
+</html>

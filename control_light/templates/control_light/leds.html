@@ -1,0 +1,17 @@
+{% extends "control_light/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+    <div class="main">
+        <form action="{% url 'leds' '1' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Activar led Azul</button>
+        </form>
+
+        <form action="{% url 'leds' '0' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Activar led Rojo</button>
+        </form>
+    </div>
+{% endblock  %}
