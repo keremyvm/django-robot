@@ -3,17 +3,12 @@
 {% load static %}
 
 {% block body %}
-    <h1>Django arduino IOT</h1>
-
+    <h1>Arduino Python</h1>
     <div class="main">
-        
-        
-        
         <div>
             <table width="100%">
                 <tr>
                     <td width="50%">
-
                         <canvas id="chart-volt" style="width: 100% !important"></canvas>
                     </td>
                     <td width="50%">
@@ -22,11 +17,9 @@
                 </tr>
             </table>
         </div>
-    </div>
-    
+    </div>    
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
     <script>
         const tension  = 0.5;
         const chrtVolt = new Chart(document.getElementById('chart-volt').getContext('2d'), {
@@ -83,15 +76,11 @@
         }
 
         let iteraciones = 1;
-        
-
-
         async function updateChart(_chart, config) {
             _chart.data.labels = config.labels
             _chart.data.datasets[0].data = config.dataSet
             _chart.update()
         }
-
         function scaling(x, in_min, in_max, out_min, out_max) {
             let denominador = (parseFloat(in_max) - parseFloat(in_min)) + parseFloat(out_min);
             let numerador = (parseFloat(x) - parseFloat(in_min)) * (parseFloat(out_max) - parseFloat(out_min));
@@ -100,14 +89,13 @@
             }
             return parseFloat((numerador / denominador).toFixed(2));
         }
-
         setInterval(async () => {
             let r =  await axios.get(`{% url 'readGraph' %}`);
 
             let voltaje = scaling(r.data.volt, 0, 1023, 0, 5);
             let temperatura = parseFloat((r.data.temp / 50).toFixed(2)); // scaling(r.data.temp, 0, 1023, -50, 150);
 
-            console.table({ voltaje, voltajeOriginal: r.data.volt, temperatura, temperaturaOriginal:r.data.temp })
+            console.table({ voltaje, temperatura })
 
             chartConfig.volt.labels.push(iteraciones);
             chartConfig.volt.dataSet.push(voltaje);
@@ -121,10 +109,8 @@
             await updateChart(chrtSer, chartConfig.temp);
 
             iteraciones++;
-        }, 2000);
-
-        
-       
-        
+        }, 2000); 
     </script>
 {% endblock  %}
+
+

@@ -6,12 +6,12 @@
     <div class="main">
         <form action="{% url 'leds' '1' %}" method="post">
             {% csrf_token %}
-            <button type="submit">Activar led Azul</button>
+            <button type="submit" class="waves-light btn blue">Activar led Azul</button>
         </form>
-
+        <br>
         <form action="{% url 'leds' '0' %}" method="post">
             {% csrf_token %}
-            <button type="submit">Activar led Rojo</button>
+            <button type="submit" class="waves-light btn red">Activar led Rojo</button>
         </form>
     </div>
 {% endblock  %}

@@ -1,0 +1,25 @@
+{% extends "control_light/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+    <div class="main">
+        <div class="container">
+            <input type="range" min="0" max="360" id="servo-range" value="0" />
+            <div class="text-center">
+                <span class="span" id="rpt">0°</span>
+            </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        (function (){
+            document.getElementById('servo-range').onchange = async function (ev) {
+
+                await axios.get("/control_light/enviarServo/" + ev.target.value);
+                document.getElementById('rpt').innerText = `${ev.target.value}°`;
+                
+            }
+        })();
+    </script>
+{% endblock  %}
