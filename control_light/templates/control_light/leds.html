@@ -4,14 +4,16 @@
 
 {% block body %}
     <div class="main">
-        <form action="{% url 'leds' '1' %}" method="post">
+        <form action="{% url 'leds' '12' %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="waves-light btn blue">Activar led Azul</button>
+            <button type="submit" class="waves-light btn blue" name="btn" value="1">Activar led Azul</button>
+            <button type="submit" class="waves-light btn blue" name="btn" value="0">Desactivar led Azul</button>
         </form>
         <br>
-        <form action="{% url 'leds' '0' %}" method="post">
+        <form action="{% url 'leds' '13' %}" method="post">
             {% csrf_token %}
-            <button type="submit" class="waves-light btn red">Activar led Rojo</button>
+            <button type="submit" class="waves-light btn red" name="btn" value="1">Activar led Rojo</button>
+            <button type="submit" class="waves-light btn red" name="btn" value="0">Desactivar led Rojo</button>
         </form>
     </div>
 {% endblock  %}

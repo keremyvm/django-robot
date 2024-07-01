@@ -58,8 +58,11 @@
             options: {
                 scales: {
                     y: {
-                        min: 15, // Valor mínimo del eje Y
-                        max: 18 // Valor máximo del eje Y
+                        // min: 15, // Valor mínimo del eje Y
+                        // max: 18 // Valor máximo del eje Y
+
+                        min: 0, // Valor mínimo del eje Y
+                        max: 100 // Valor máximo del eje Y
                     }
                 }
             }
@@ -89,11 +92,16 @@
             }
             return parseFloat((numerador / denominador).toFixed(2));
         }
+
+
+        
         setInterval(async () => {
             let r =  await axios.get(`{% url 'readGraph' %}`);
 
             let voltaje = scaling(r.data.volt, 0, 1023, 0, 5);
-            let temperatura = parseFloat((r.data.temp / 50).toFixed(2)); // scaling(r.data.temp, 0, 1023, -50, 150);
+            // let temperatura = parseFloat((r.data.temp / 50).toFixed(2)); // scaling(r.data.temp, 0, 1023, -50, 150);
+            // let temperatura = parseFloat(r.data.temp / 58).toFixed(2);
+            let temperatura = scaling(r.data.temp, 0, 1023, 0, 100);
 
             console.table({ voltaje, temperatura })
 
